@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "v90x+ln63ipbr2bMP1o3Vtq7rRhX9MpDOLJQGkb0H1dCItenRcEGgLZWV8PTC9TLnC1r9EK4vlSqLQxzcJtgMg==",
+  "success": true,
+  "projectFilePath": "E:\\Coursework\\ir2il\\ir2il\\ir2il\\ir2il.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Fail\\.nuget\\packages\\mono.cecil\\0.11.5\\mono.cecil.0.11.5.nupkg.sha512"
+  ],
+  "logs": []
+}
