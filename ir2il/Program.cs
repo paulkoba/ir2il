@@ -13,7 +13,7 @@ class Program
 {
     public static void Main(string[] args)
     {
-        string filename = "E:\\Coursework\\ir2cil\\examples\\lexer_test.ll";
+        string filename = "E:\\Coursework\\ir2il\\examples\\parser_test.ll";
         if (args.Length == 0)
         {
             Console.WriteLine("No valid file provided for compilation. Using " + filename + " as fallback.");
@@ -38,6 +38,8 @@ class Program
         Parser parser = new Parser(tokens);
         Module module = parser.Parse();
         module.PopulateParents();
+
+        Console.WriteLine("AST:\n" + module.ToString());
 
         module.SetBuildParameters("hello", "1.0.0", "example.exe");
         module.Codegen();

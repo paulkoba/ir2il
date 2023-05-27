@@ -14,6 +14,8 @@ namespace ir2cil.Lexer
         Dso_local,
         Declare,
         Attributes,
+        Nsw,
+        Nus,
 
         None,
     }
@@ -38,6 +40,7 @@ namespace ir2cil.Lexer
         Metadata,
         String,
         Equals,
+        IntegerLiteral,
         Comma
     }
 
@@ -57,6 +60,10 @@ namespace ir2cil.Lexer
                     return Keyword.Declare;
                 case "attributes":
                     return Keyword.Attributes;
+                case "nsw":
+                    return Keyword.Nsw;
+                case "nus":
+                    return Keyword.Nus;
                 default:
                     return Keyword.None;
             }
@@ -244,6 +251,14 @@ namespace ir2cil.Lexer
             if (currentToken.type == TokenType.None)
             {
                 return;
+            }
+
+            if (currentToken.type == TokenType.Keyword)
+            {
+                if(currentToken.value.All(char.IsDigit))
+                {
+                    currentToken.type = TokenType.IntegerLiteral;
+                }
             }
 
             tokens.Add(currentToken);
