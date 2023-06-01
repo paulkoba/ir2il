@@ -138,6 +138,56 @@ namespace ir2cil.Parser
             return func;
         }
 
+        Jump ParseNormalJump()
+        {
+            ++currentToken;
+            var where = tokens[currentToken];
+
+            while (tokens[currentToken].type != TokenType.Newline)
+            {
+                ++currentToken;
+            }
+            ++currentToken;
+
+            return new Jump(where);
+        }
+
+        ConditionalJump ParseCondJump()
+        {
+            var type = tokens[currentToken];
+            ++currentToken;
+            var what = tokens[currentToken];
+            ++currentToken;
+            ++currentToken;
+            ++currentToken;
+            var where1 = tokens[currentToken];
+            ++currentToken;
+            ++currentToken;
+            ++currentToken;
+            var where2 = tokens[currentToken];
+
+            while (tokens[currentToken].type != TokenType.Newline)
+            {
+                ++currentToken;
+            }
+            ++currentToken;
+
+            return new ConditionalJump(type, what, where1, where2);
+        }
+
+        BaseNode ParseJump()
+        {
+            ++currentToken;
+            if (tokens[currentToken].value == "label")
+            {
+                return ParseNormalJump();
+            }
+            else
+            {
+                return ParseCondJump();
+            }
+        }
+
         BinaryOperation ParseBinaryOperation()
         {
             Token operation = tokens[currentToken];
@@ -390,6 +440,13 @@ namespace ir2cil.Parser
 
         BaseNode ParseStmt()
         {
+            if (tokens[currentToken].type == TokenType.Label)
+            {
+                var l = tokens[currentToken];
+                ++currentToken;
+                return new Label(l);
+            }
+
             if (tokens[currentToken].type == TokenType.LocalIdentifier)
             {
                 Token identifier = tokens[currentToken];
@@ -401,7 +458,7 @@ namespace ir2cil.Parser
                 }
                 ++currentToken;
 
-                if (BinaryOperation.IsBinaryOperation(tokens[currentToken].value)) 
+                if (BinaryOperation.IsBinaryOperation(tokens[currentToken].value))
                 {
                     return new VariableDeclaration(identifier, ParseBinaryOperation());
                 }
@@ -421,6 +478,10 @@ namespace ir2cil.Parser
                 {
                     return new VariableDeclaration(identifier, ParseCall());
                 }
+                else if (Comparison.IsComparison(tokens[currentToken].value))
+                {
+                    return new VariableDeclaration(identifier, ParseCompare());
+                }
                 else
                 {
                     throw new NotImplementedException("Not yet implemented.");
@@ -438,6 +499,10 @@ namespace ir2cil.Parser
             else if (Call.IsCall(tokens[currentToken].value)) 
             {
                 return ParseCall();    
+            }
+            else if (ConditionalJump.IsJump(tokens[currentToken].value))
+            {
+                return ParseJump();
             }
 
             ++currentToken;
@@ -478,6 +543,32 @@ namespace ir2cil.Parser
             ++currentToken;
 
             return null;
+        }
+
+        Comparison ParseCompare()
+        {
+            Token identifier = tokens[currentToken];
+            ++currentToken;
+            CondType cond = Comparison.GetCondTypeFromString(tokens[currentToken].value);
+            ++currentToken;
+            Token type = tokens[currentToken];
+            ++currentToken;
+            Token lhs = tokens[currentToken];
+            ++currentToken;
+            if (tokens[currentToken].type != TokenType.Comma)
+            {
+                throw new SyntaxErrorException("Expected comma, got '" + tokens[currentToken].value + "' (" + tokens[currentToken].type.ToString() + ")");
+            }
+            ++currentToken;
+            Token rhs = tokens[currentToken];
+
+            while (tokens[currentToken].type != TokenType.Newline)
+            {
+                ++currentToken;
+            }
+            ++currentToken;
+
+            return new Comparison(Comparison.GetComparisonTypeFromString(identifier.value), cond, type, lhs, rhs);
         }
 
         void ConsumeWhitespace()

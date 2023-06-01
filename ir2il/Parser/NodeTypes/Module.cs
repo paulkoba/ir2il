@@ -44,6 +44,16 @@ namespace ir2cil.Parser.NodeTypes
             {
                 node.Codegen();
             }
+        }
+
+        public override void CodegenPass2()
+        {
+            Console.WriteLine("Second pass...");
+
+            foreach (BaseNode node in children)
+            {
+                node.CodegenPass2();
+            }
 
             assembly.Write(filename);
         }
@@ -85,35 +95,6 @@ namespace ir2cil.Parser.NodeTypes
             il.Append(il.Create(OpCodes.Ret));
 
             wrapperClass.Methods.Add(ctor);
-
-            // define the 'Main' method and add it to 'Program'
-            var mainMethod = new MethodDefinition("NotMain",
-                Mono.Cecil.MethodAttributes.Public | Mono.Cecil.MethodAttributes.Static, mainModule.TypeSystem.Void);
-
-            wrapperClass.Methods.Add(mainMethod);
-
-            // add the 'args' parameter
-            var argsParameter = new ParameterDefinition("args",
-                Mono.Cecil.ParameterAttributes.None, mainModule.Import(typeof(string[])));
-
-            mainMethod.Parameters.Add(argsParameter);
-
-            // create the method body
-            il = mainMethod.Body.GetILProcessor();
-
-            il.Append(il.Create(OpCodes.Nop));
-            il.Append(il.Create(OpCodes.Ldstr, "Hello"));
-
-            var writeLineMethod = il.Create(OpCodes.Call, mainModule.Import(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) })));
-
-            // call the method
-            il.Append(writeLineMethod);
-
-            il.Append(il.Create(OpCodes.Nop));
-            il.Append(il.Create(OpCodes.Ret));
-
-            // set the entry point and save the module
-            assembly.EntryPoint = mainMethod;
         }
 
         public override Module GetParentModule()

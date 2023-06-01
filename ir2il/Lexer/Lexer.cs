@@ -41,6 +41,7 @@ namespace ir2cil.Lexer
         String,
         Equals,
         IntegerLiteral,
+        Label,
         Comma
     }
 
@@ -150,6 +151,17 @@ namespace ir2cil.Lexer
                     {
                         currentToken.value += str[i];
                         continue;
+                    }
+
+                    if (str[i] == ':')
+                    {
+                        if(currentToken.type == TokenType.Keyword) 
+                        {
+                            ++i;
+                            currentToken.type = TokenType.Label;
+                            FlushToken();
+                            continue;
+                        }
                     }
 
                     if (str[i] == '@' || str[i] == '%' || str[i] == '#' || str[i] == '!')

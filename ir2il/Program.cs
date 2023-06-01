@@ -13,16 +13,15 @@ class Program
 {
     public static void Main(string[] args)
     {
-        string filename = "E:\\Coursework\\ir2il\\examples\\parser_test.ll";
-        if (args.Length == 0)
+        if(args.Length == 0)
         {
-            Console.WriteLine("No valid file provided for compilation. Using " + filename + " as fallback.");
-        }
-        else
-        {
-            filename = args[0];
+            Console.WriteLine("No valid filename provided");
+            return;
         }
 
+        var filename = args[0];
+
+        Console.WriteLine("No valid file provided for compilation. Using " + filename + " as fallback.");
 
         Lexer lexer = new Lexer();
 
@@ -43,5 +42,6 @@ class Program
 
         module.SetBuildParameters("hello", "1.0.0", "example.exe");
         module.Codegen();
+        module.CodegenPass2();
     }
 }

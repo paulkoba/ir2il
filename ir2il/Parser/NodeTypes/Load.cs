@@ -31,7 +31,7 @@ namespace ir2cil.Parser.NodeTypes
         {
             var v = GetVariable(where);
             var ilproc = GetParentFunctionMethodDefinition().Body.GetILProcessor();
-            ilproc.Emit(Mono.Cecil.Cil.OpCodes.Ldloc, v);
+            ilproc.Emit(OpCodes.Ldloc, v);
         }
 
         public override TypeReference GetILType()

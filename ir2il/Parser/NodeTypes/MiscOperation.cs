@@ -10,9 +10,6 @@ namespace ir2cil.Parser.NodeTypes
 {
     enum MiscOperationType
     {
-        Store,
-        Ret,
-
         None,
     }
 
@@ -24,12 +21,6 @@ namespace ir2cil.Parser.NodeTypes
         }
         public static MiscOperationType GetMiscOperationFromString(string opName)
         {
-            switch (opName)
-            {
-                case "store": return MiscOperationType.Store;
-                case "ret": return MiscOperationType.Ret;
-            }
-
             return MiscOperationType.None;
         }
 

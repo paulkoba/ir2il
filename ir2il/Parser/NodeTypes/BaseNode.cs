@@ -117,5 +117,32 @@ namespace ir2cil.Parser.NodeTypes
                 parent.RegisterMethodDefinition(name, method);
             }
         }
+
+        public virtual void CodegenPass2()
+        {
+
+        }
+        public virtual Instruction GetLabelMarkerByName(Token token)
+        {
+            if(parent != null)
+            {
+                return parent.GetLabelMarkerByName(token);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+        public virtual void RegisterLabelMarker(Token token, Instruction instruction)
+        {
+            if (parent != null)
+            {
+                parent.RegisterLabelMarker(token, instruction);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

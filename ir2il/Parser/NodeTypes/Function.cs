@@ -20,6 +20,12 @@ namespace ir2cil.Parser.NodeTypes
         string name;
         Mono.Cecil.MethodDefinition method;
         Dictionary<string, VariableDefinition> variables = new();
+        Dictionary<string, Instruction> labels = new();
+
+        public override Instruction GetLabelMarkerByName(Token token)
+        {
+            return labels[token.value];
+        }
 
         public Function(string returnType, string name, List<Tuple<Token, Token>> arguments)
         {
@@ -74,6 +80,14 @@ namespace ir2cil.Parser.NodeTypes
             }
         }
 
+        public override void CodegenPass2()
+        {
+            foreach (BaseNode stmt in stmts)
+            {
+                stmt.CodegenPass2();
+            }
+        }
+
         public override string ToString()
         {
             String result = returnType + " " + name + "(";
@@ -117,6 +131,11 @@ namespace ir2cil.Parser.NodeTypes
             }
         }
 
+        public override void RegisterLabelMarker(Token token, Instruction instruction)
+        {
+            labels[token.value] = instruction;
+        }
+
         public override void LoadOntoStack(Token value)
         {
             Console.WriteLine("Loading token:" + value);
@@ -138,6 +157,7 @@ namespace ir2cil.Parser.NodeTypes
 
             if (value.type == Lexer.TokenType.IntegerLiteral)
             {
+                // TODO: convert the value loaded to the correct type
                 ilproc.Emit(OpCodes.Ldc_I4, Int32.Parse(value.value));
             }
         }

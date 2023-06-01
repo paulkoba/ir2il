@@ -47,7 +47,7 @@ namespace ir2cil.Parser.NodeTypes
 
         public override void Codegen()
         {
-            if(name.value == "llvm.dbg.declare")
+            if(name.value == "llvm.dbg.declare" || name.value == "llvm.dbg.assign" || name.value == "llvm.dbg.value")
             {
                 return;
             }
